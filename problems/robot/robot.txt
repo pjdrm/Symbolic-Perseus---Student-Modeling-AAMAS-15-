@@ -1,0 +1,175 @@
+(variables
+(robot node01 node02 node03 node04 node05 node06 node07 node08 node09 node10
+node11) // robot location
+)
+
+(observations
+(robotLoc obsRobot01 obsRobot02 obsRobot03 obsRobot04 obsRobot05 obsRobot06
+obsRobot07 obsRobot08 obsRobot09 obsRobot10 obsRobot11) // robot observations
+)
+
+init [* (robot
+(node01 (0.0))
+(node02 (0.1))
+(node03 (0.8))
+(node04 (0.0))
+(node05 (0.0))
+(node06 (0.1))
+(node07 (0.0))
+(node08 (0.0))
+(node09 (0.0))
+(node10 (0.0))
+(node11 (0.0)))
+]
+
+dd robotmove1 // nothing
+(robot
+(node01 (robot' (node01 (1.000000))))
+(node02 (robot' (node02 (1.000000))))
+(node03 (robot' (node03 (1.000000))))
+(node04 (robot' (node04 (1.000000))))
+(node05 (robot' (node05 (1.000000))))
+(node06 (robot' (node06 (1.000000))))
+(node07 (robot' (node07 (1.000000))))
+(node08 (robot' (node08 (1.000000))))
+(node09 (robot' (node09 (1.000000))))
+(node10 (robot' (node10 (1.000000))))
+(node11 (robot' (node11 (1.000000))))
+)
+enddd
+
+dd robotmove2 // right
+(robot
+(node01 (robot' (node04 (0.800000)) (node05 (0.200000))))
+(node02 (robot' (node04 (0.100000)) (node05 (0.800000)) (node06 (0.100000))))
+(node03 (robot' (node05 (0.200000)) (node06 (0.800000))))
+(node04 (robot' (node07 (1.000000))))
+(node05 (robot' (node05 (1.000000))))
+(node06 (robot' (node08 (1.000000))))
+(node07 (robot' (node09 (0.800000)) (node10 (0.200000))))
+(node08 (robot' (node10 (0.20000)) (node11 (0.80000))))
+(node09 (robot' (node09 (1.000000))))
+(node10 (robot' (node10 (1.000000))))
+(node11 (robot' (node11 (1.000000))))
+)
+enddd
+
+dd robotmove3 // left
+(robot
+(node01 (robot' (node01 (1.000000))))
+(node02 (robot' (node02 (1.000000))))
+(node03 (robot' (node03 (1.000000))))
+(node04 (robot' (node01 (0.800000)) (node02 (0.200000))))
+(node05 (robot' (node01 (0.100000)) (node02 (0.800000)) (node03 (0.100000))))
+(node06 (robot' (node02 (0.200000)) (node03 (0.800000))))
+(node07 (robot' (node04 (0.800000)) (node05 (0.200000))))
+(node08 (robot' (node05 (0.200000)) (node06 (0.800000))))
+(node09 (robot' (node07 (1.000000))))
+(node10 (robot' (node10 (1.000000))))
+(node11 (robot' (node08 (1.000000))))
+)
+enddd
+
+dd robotmove4 // up
+(robot
+(node01 (robot' (node01 (1.000000))))
+(node02 (robot' (node01 (0.800000)) (node04 (0.200000))))
+(node03 (robot' (node02 (0.800000)) (node05 (0.200000))))
+(node04 (robot' (node04 (1.000000))))
+(node05 (robot' (node01 (0.100000)) (node04 (0.800000)) (node07 (0.100000))))
+(node06 (robot' (node02 (0.200000)) (node05 (0.800000))))
+(node07 (robot' (node07 (1.000000))))
+(node08 (robot' (node08 (1.000000))))
+(node09 (robot' (node09 (1.000000))))
+(node10 (robot' (node07 (0.200000)) (node09 (0.800000))))
+(node11 (robot' (node10 (1.000000))))
+)
+enddd
+
+dd robotmove5 // down
+(robot
+(node01 (robot' (node02 (0.800000)) (node05 (0.200000))))
+(node02 (robot' (node03 (0.800000)) (node06 (0.200000))))
+(node03 (robot' (node03 (1.000000))))
+(node04 (robot' (node02 (0.200000)) (node05 (0.800000))))
+(node05 (robot' (node03 (0.100000)) (node06 (0.800000)) (node08 (0.100000))))
+(node06 (robot' (node06 (1.000000))))
+(node07 (robot' (node07 (1.000000))))
+(node08 (robot' (node08 (1.000000))))
+(node09 (robot' (node10 (1.000000))))
+(node10 (robot' (node08 (0.200000)) (node11 (0.800000))))
+(node11 (robot' (node11 (1.000000))))
+)
+enddd
+
+dd perfectRobotLocalization
+(robot'
+(node01 (robotLoc' (obsRobot01 (1.0))))
+(node02 (robotLoc' (obsRobot02 (1.0))))
+(node03 (robotLoc' (obsRobot03 (1.0))))
+(node04 (robotLoc' (obsRobot04 (1.0))))
+(node05 (robotLoc' (obsRobot05 (1.0))))
+(node06 (robotLoc' (obsRobot06 (1.0))))
+(node07 (robotLoc' (obsRobot07 (1.0))))
+(node08 (robotLoc' (obsRobot08 (1.0))))
+(node09 (robotLoc' (obsRobot09 (1.0))))
+(node10 (robotLoc' (obsRobot10 (1.0))))
+(node11 (robotLoc' (obsRobot11 (1.0))))
+)
+enddd
+
+action nothing
+robot (robotmove1)
+observe
+//robotLoc (noisyRobotLocalization)
+robotLoc(perfectRobotLocalization)
+endobserve
+endaction
+
+action right
+robot (robotmove2)
+observe
+//robotLoc (noisyRobotLocalization)
+robotLoc(perfectRobotLocalization)
+endobserve
+endaction
+
+action left
+robot (robotmove3)
+observe
+//robotLoc (noisyRobotLocalization)
+robotLoc(perfectRobotLocalization)
+endobserve
+endaction
+
+action up
+robot (robotmove4)
+observe
+//robotLoc (noisyRobotLocalization)
+robotLoc(perfectRobotLocalization)
+endobserve
+endaction
+
+action down
+robot (robotmove5)
+observe
+//robotLoc (noisyRobotLocalization)
+robotLoc(perfectRobotLocalization)
+endobserve
+endaction
+
+reward (robot (node01 (-0.125))
+(node02 (-0.125))
+(node03 (-0.125))
+(node04 (-0.125))
+(node05 (-0.125))
+(node06 (-0.125))
+(node07 (-0.125))
+(node08 (-0.125))
+(node09 (1.0))
+(node10 (-1.0))
+(node11 (-0.125))
+)
+
+discount 0.99
+tolerance 0.0001

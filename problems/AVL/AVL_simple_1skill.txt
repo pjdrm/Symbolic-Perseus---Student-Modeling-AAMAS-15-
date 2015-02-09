@@ -1,0 +1,106 @@
+//////////////////////////////////////////////////////	
+/////////STATE VARIABLES//////////////////////////////	
+//////////////////////////////////////////////////////	
+(variables 
+	(sk_height_empty knows1 not_know1) 			// student knows how to calculate the height of an empty tree
+	(sk_height_leaf knows2 not_know2) 			// student knows how to calculate the height of a leaf tree
+	(mode teach exercise)						// tells if student is studying (teach) or doing practice exercises (exercise). Its a workaround for the reward function
+)
+
+//////////////////////////////////////////////////////	
+/////////OBSERVATIONS/////////////////////////////////	
+//////////////////////////////////////////////////////	
+(observations	(answer	c ic none))
+
+//////////////////////////////////////////////////////	
+/////////CONDITIONAL PROBABILITY TABLES///////////////	
+//////////////////////////////////////////////////////	
+
+////////State related CTPs////////////////////////////
+dd cpt_exercise_height_empty
+	(sk_height_empty	(knows1    		(sk_height_empty'	(knows1	(0.8)) (not_know1	(0.2))))
+						(not_know1		(sk_height_empty'	(not_know1	(1.0)))))
+enddd
+
+dd cpt_exercise_height_leaf
+	(sk_height_leaf		(knows2    		(sk_height_leaf'	(knows2	(0.8)) (not_know2	(0.2))))
+						(not_know2		(sk_height_leaf'	(not_know2	(1.0)))))
+enddd
+
+dd cpt_teach_height_empty
+	(sk_height_empty	(knows1    		(sk_height_empty'	(knows1	(0.9)) (not_know1	(0.1))))
+						(not_know1		(sk_height_empty'	(knows1	(0.9)) (not_know1	(0.1)))))
+enddd
+
+dd cpt_teach_height_leaf
+	(sk_height_leaf		(knows2    		(sk_height_leaf'	(knows2	(0.9)) (not_know2	(0.1))))
+						(not_know2		(sk_height_leaf'	(knows2	(0.9)) (not_know2	(0.1)))))
+enddd
+
+dd cpt_teach_mode
+	(mode	(teach    	(mode'	(teach	(1.0))))
+			(exercise	(mode'	(teach	(1.0)))))
+enddd
+
+dd cpt_exercise_mode
+	(mode	(teach    	(mode'	(exercise	(1.0))))
+			(exercise	(mode'	(exercise	(1.0)))))
+enddd
+
+////////Observation related CTPs//////////////////////
+dd cpt_answer
+(sk_height_empty'	(knows1		(sk_height_leaf'	(knows2		(answer' (c (0.8)) (ic (0.2))))
+													(not_know2	(answer' (ic (1.0))))))
+					(not_know1	(sk_height_leaf'	(not_know2	(answer' (ic (1.0))))
+													(knows2		(answer' (ic (1.0)))))))
+enddd
+
+dd cpt_answer_none
+(sk_height_empty'	(knows1		(sk_height_leaf'	(knows2 	(answer' (none (1.0))))
+													(not_know2	(answer' (none (1.0))))))
+					(not_know1	(sk_height_leaf'	(not_know2	(answer' (none (1.0))))
+													(knows2		(answer' (none (1.0)))))))
+enddd
+
+//////////////////////////////////////////////////////	
+/////////ACTIONS//////////////////////////////////////
+//////////////////////////////////////////////////////	
+action teach_sk_height_empty
+	sk_height_empty (cpt_teach_height_empty)
+	sk_height_leaf	(SAMEsk_height_leaf)
+	mode			(cpt_teach_mode)
+	observe
+		answer	(cpt_answer_none)
+	endobserve
+endaction
+
+action teach_sk_height_leaf
+	sk_height_empty (SAMEsk_height_empty)
+	sk_height_leaf	(cpt_teach_height_leaf)
+	mode			(cpt_teach_mode)
+	observe
+		answer	(cpt_answer_none)
+	endobserve
+endaction
+
+action exercise_BST_Balance
+	sk_height_empty (cpt_exercise_height_empty)
+	sk_height_leaf	(cpt_exercise_height_leaf)
+	mode			(cpt_exercise_mode)
+	observe
+		answer	(cpt_answer)
+	endobserve
+endaction
+
+//////////////////////////////////////////////////////	
+/////////REWARD FUNCTION//////////////////////////////	
+//////////////////////////////////////////////////////	
+reward (mode	(exercise (sk_height_empty	(knows1	(sk_height_leaf (knows2 (2.0))))))
+				(teach (0.0)))
+			
+init	[*	(sk_height_empty	(knows1	(0.0))	(not_know1	(1.0)))
+			(sk_height_leaf	(knows2	(1.0))	(not_know2	(0.0)))]
+	 
+discount 0.9
+tolerance 0.001
+horizon 6

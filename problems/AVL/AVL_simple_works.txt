@@ -1,0 +1,78 @@
+//////////////////////////////////////////////////////	
+/////////STATE VARIABLES//////////////////////////////	
+//////////////////////////////////////////////////////	
+(variables 
+	(sk_height_empty knows not_know) 			// student knows how to calculate the height of an empty tree
+	(mode teach exercise)
+)
+
+//////////////////////////////////////////////////////	
+/////////OBSERVATIONS/////////////////////////////////	
+//////////////////////////////////////////////////////	
+(observations	(answer	c ic none))
+
+//////////////////////////////////////////////////////	
+/////////CONDITIONAL PROBABILITY TABLES///////////////	
+//////////////////////////////////////////////////////	
+dd cpt_exercise_height_empty
+	(sk_height_empty	(knows    		(sk_height_empty'	(knows	(0.8)) (not_know	(0.2))))
+						(not_know		(sk_height_empty'	(not_know	(1.0)))))
+enddd
+
+dd cpt_teach_height_empty
+	(sk_height_empty	(knows    		(sk_height_empty'	(knows	(0.9)) (not_know	(0.1))))
+						(not_know		(sk_height_empty'	(knows	(0.9)) (not_know	(0.1)))))
+enddd
+
+dd cpt_teach_mode
+	(mode	(teach    	(mode'	(teach	(1.0))))
+			(exercise	(mode'	(teach	(1.0)))))
+enddd
+
+dd cpt_exercise_mode
+	(mode	(teach    	(mode'	(exercise	(1.0))))
+			(exercise	(mode'	(exercise	(1.0)))))
+enddd
+
+dd cpt_answer
+(sk_height_empty'	(knows 		(answer' (c (0.8)) (ic (0.2))))
+					(not_know	(answer' (ic (1.0)))))
+enddd
+
+dd cpt_answer_none
+(sk_height_empty'	(knows 		(answer' (none (1.0))))
+					(not_know	(answer' (none (1.0)))))
+enddd
+
+//////////////////////////////////////////////////////	
+/////////ACTIONS//////////////////////////////////////
+//////////////////////////////////////////////////////	
+action teach_sk_height_empty
+	sk_height_empty (cpt_teach_height_empty)
+	mode			(cpt_teach_mode)
+	observe
+		answer	(cpt_answer_none)
+	endobserve
+endaction
+
+action exercise_skills_1
+	sk_height_empty (cpt_exercise_height_empty)
+	mode			(cpt_exercise_mode)
+	observe
+		answer	(cpt_answer)
+	endobserve
+endaction
+
+//////////////////////////////////////////////////////	
+/////////REWARD FUNCTION//////////////////////////////	
+//////////////////////////////////////////////////////	
+reward (mode	(exercise (sk_height_empty	(knows	(2.0))
+											(not_know (-1.0))))
+				(teach (sk_height_empty	(knows	(0.0))
+										(not_know (0.0)))))
+			
+init (sk_height_empty	(knows	(0.0))	(not_know	(1.0)))
+	 
+discount 0.9
+tolerance 0.001
+horizon 6
